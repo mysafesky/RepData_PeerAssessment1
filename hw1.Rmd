@@ -1,0 +1,31 @@
+---
+title: "Peer Assignment 1"
+author: "Zhengcheng Gu"
+date: "October 19, 2014"
+output: html_document
+---
+### Prepare the environment
+```{r}
+rm(list=ls())
+```
+---
+### Part 1. Loading and preprocessing the data
+Read in data and save it into dat_src as a data frame
+
+```{r}
+dat_src <-read.csv("~/Documents/Rwork/ReproducibleResearch/RepData_PeerAssessment1/activity.csv")
+summary(dat_src)
+class(dat_src)
+```
+---
+### Part 2. Mean total number of steps taken perday
+
+Step 2.1 Ignore missing values
+```{r}
+dat_src_noNA <- dat_src[!is.na(dat_src[,1]),]
+```
+
+Step 2.2 make a histogram of the total number of steps taken each day
+```{r}
+hist()
+```
