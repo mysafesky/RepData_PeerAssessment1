@@ -17,7 +17,8 @@ dat_src <-read.csv("~/Documents/Rwork/ReproducibleResearch/RepData_PeerAssessmen
 summary(dat_src)
 class(dat_src)
 ```
----
+
+
 ### Part 2. Mean total number of steps taken perday
 
 Step 2.1 Ignore missing values
@@ -26,6 +27,87 @@ dat_src_noNA <- dat_src[!is.na(dat_src[,1]),]
 ```
 
 Step 2.2 make a histogram of the total number of steps taken each day
+Step 2.2.1 Find the total steps
 ```{r}
-hist()
+stepPerDay <- tapply(dat_src_noNA$steps, dat_src_noNA$date, sum)
+```
+Step 2.2.2 Create the plot
+```{r}
+hist(stepPerDay,xlab = "Total number of steps taken each day")
+```
+
+Step 2.3 Calculate and report the mean and median total number  of steps taken per day
+```{r}
+stepPerDay_mean <- mean(stepPerDay,na.rm=T)
+stepPerDay_median <- median(stepPerDay,na.rm=T)
+print(stepPerDay_mean)
+print(stepPerDay_median)
+```
+
+### Part 3. What is the average daily activity pattern
+
+Step 1. Make a time series plot of the 5-min interval and the avg number of steps taken, averaged across all days
+```{r}
+avgStepPerDay <- tapply(dat_src_noNA$steps, dat_src_noNA$interval, mean, na.rm = T)
+interval <- as.numeric(levels(factor(dat_src_noNA$interval)))
+plot(as.numeric(avgStepPerDay)~interval,type = "l",xlab="5-min interval",ylab="avg number of steps taken, averaged across all days")
+```
+
+Step 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
+```{r}
+maxNumStep <- interval[which.max(avgStepPerDay)]
+print(maxNumStep)
+```
+
+
+### Part 4.
+Imputing missing values
+
+Step 1. Find total number of NA
+```{r}
+sum(is.na(dat_src))
+```
+
+Step 2. Fill with mean for that 5-minute interval
+```{r}
+dat_src_filled <- dat_src
+for (i in 1:nrow(dat_src_filled)){
+  # Go through every row for filling
+  if(is.na(dat_src_filled[i,1])==TRUE){
+    # Find missing step row
+    index <- which(interval == dat_src_filled[i,3])
+    # Locate the intended filler
+    dat_src_filled[i,1] <- avgStepPerDay[index]
+    # Fill with mean of day
+  }
+}
+```
+Show every NA has been replaced
+```{r}
+sum(is.na(dat_src_filled))
+```
+
+Step 3. Histogram, mean and median 
+
+```{r}
+stepPerDay_filled <- tapply(dat_src_filled$steps, dat_src_filled$date, sum)
+```
+
+```{r}
+hist(stepPerDay_filled,xlab = "Total number of steps taken each day[filled]")
+```
+```{r}
+filled_mean <- mean(stepPerDay_filled,na.rm=F)
+filled_median <- median(stepPerDay_filled,na.rm=F)
+print(filled_mean)
+print(filled_median)
+```
+
+Clearly, the filling did not move the mean around at all. However, because of the filling, the new is different from the old one by one, which makes no impact on prediction/estimation.
+
+### Part 5 Weekend pattern
+
+Step 1. Create new factor
+```{r}
+
 ```
